@@ -2,8 +2,6 @@ package main
 
 import (
 	"bufio"
-	"crypto/md5"
-	"encoding/hex"
 	"fmt"
 	"log"
 	"os"
@@ -45,14 +43,14 @@ func NewNode(logPath string) Node {
 
 func NewNodes(inputFiles []string) []Node {
 	var newNodes []Node
-	for index, logPath := range inputFiles {
-		log.Printf("%d %s\n", index, logPath)
+	for _, logPath := range inputFiles {
 		_, err := os.Stat(logPath)
-		if err == nil {
-			log.Printf("file %s exists", logPath)
-			newNode := NewNode(logPath)
-			newNodes = append(newNodes, newNode)
+		if err != nil {
+			log.Printf("Cannot access \"%s\":\n%s", logPath, err)
+			os.Exit(1)
 		}
+		newNode := NewNode(logPath)
+		newNodes = append(newNodes, newNode)
 	}
 	return newNodes
 }
@@ -80,6 +78,17 @@ func RenderLogMessageRow(message LogMessage) string {
 	return row
 }
 
+func RenderNodeHeader(node Node) string {
+	html := fmt.Sprintf("<td><div>")
+	html += fmt.Sprintf("<strong>Filename:</strong><br>%s<br>", node.FileName)
+	html += fmt.Sprintf("<strong>Name:</strong><br>%s<br>", node.Name)
+	html += fmt.Sprintf("<strong>RabbitMQ:</strong><br>%s<br>", strings.Join(node.VersionRabbitMQ, "<br>"))
+	html += fmt.Sprintf("<strong>Erlang:</strong><br>%s<br>", strings.Join(node.VersionErlang, "<br>"))
+	html += fmt.Sprintf("<strong>Cookie Hash:</strong><br>%s<br>", strings.Join(node.CookieHash, "<br>"))
+	html += fmt.Sprintf("</div></td>")
+	return html
+}
+
 func RemoveDuplicatesFromSlice(s []string) []string {
 	m := make(map[string]bool)
 	for _, item := range s {
@@ -97,13 +106,7 @@ func RemoveDuplicatesFromSlice(s []string) []string {
 	return result
 }
 
-func GetMD5Hash(text string) string {
-	hasher := md5.New()
-	hasher.Write([]byte(text))
-	return hex.EncodeToString(hasher.Sum(nil))
-}
-
-func checkLogMessageForInfo(logMessage *LogMessage, nodes []Node) {
+func checkLogMessageForReport(logMessage *LogMessage, nodes []Node) {
 	for _, message := range logMessage.Message {
 		if strings.Contains(message, "node           :") {
 			parts := strings.Split(message, " : ")
@@ -130,7 +133,6 @@ func checkLogMessageForInfo(logMessage *LogMessage, nodes []Node) {
 				"info",
 			})
 		}
-
 		if strings.Contains(message, "Memory high watermark set to ") {
 			parts := strings.Split(message, " ")
 			logMessage.Reports = append(logMessage.Reports, Report{
@@ -174,82 +176,68 @@ func checkLogMessageForInfo(logMessage *LogMessage, nodes []Node) {
 }
 
 func generateReportHTML(logTable map[string][][]*LogMessage, logDateTimes []string, nodes []Node) string {
-	html := ""
-	html += fmt.Sprintf(`
-<style>
-*{
-	font-family:monospace;
-	font-size:12px;
-}
-pre{
-	margin:0px;
-}
-td{
-	vertical-align:top;
-}
-table {
-	border-top: 1px solid #CCC;
-	border-left: 1px solid #CCC;
-}
-td,th {
-	border-bottom: 1px solid #CCC;
-	border-right: 1px solid #CCC;
-	padding: 0px;
-	vertical-align:top;
-}
-td > div {
-	padding:3px;
-}
-.nowrap{
-	white-space:nowrap;
-}
-.prewrap{
-	white-space:pre-wrap;
-}
-.severity_info{
-	background-color:
-}
-.severity_notice{
-	background-color:#4DA6FF;
-}
-.severity_warning{
-	background-color:#FFA64D;
-}
-.severity_error{
-	background-color:#FF4D4D;
-}
-</style>`)
-	html += fmt.Sprintf("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\">")
-
-	html += "<thead>"
-	html += "<tr>"
-	html += "<th></td>"
-	for _, node := range nodes {
-		html += fmt.Sprintf(`<td>
-<div>
-<strong>Filename:</strong><br>
-%s<br>
-<strong>Name:</strong><br>
-%s<br>
-<strong>RabbitMQ:</strong><br>
-%s<br>
-<strong>Erlang:</strong><br>
-%s<br>
-<strong>Cookie Hash:</strong><br>
-%s</div>
-</td>`, node.FileName, node.Name, strings.Join(node.VersionRabbitMQ, "<br>"), strings.Join(node.VersionErlang, "<br>"), strings.Join(node.CookieHash, "<br>"))
-
+	htmlStyle := `
+	<style>
+	*{
+		font-family:monospace;
+		font-size:12px;
 	}
-	html += "</tr>"
-	html += "</thead>"
-	html += "<tbody>"
-	for _, logDateTime := range logDateTimes {
+	pre{
+		margin:0px;
+	}
+	td{
+		vertical-align:top;
+	}
+	table {
+		border-top: 1px solid #EEE;
+		border-left: 1px solid #EEE;
+	}
+	td,th {
+		border-bottom: 1px solid #EEE;
+		border-right: 1px solid #EEE;
+		padding: 0px;
+		vertical-align:top;
+	}
+	td > div {
+		padding:3px;
+	}
+	.nowrap{
+		white-space:nowrap;
+	}
+	.prewrap{
+		white-space:pre-wrap;
+	}
+	.severity_info{
+		background-color:
+	}
+	.severity_notice{
+		background-color:#4DA6FF;
+	}
+	.severity_warning{
+		background-color:#FFA64D;
+	}
+	.severity_error{
+		background-color:#FF4D4D;
+	}
+	</style>`
 
-		logDateTimeHash := GetMD5Hash(logDateTime)
-		html += fmt.Sprintf("<tr class=\"%s\">", logDateTimeHash)
+	html := ""
+	html += fmt.Sprintf(htmlStyle)
+	html += fmt.Sprintf("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n")
+	html += fmt.Sprintf("<thead>\n")
+	html += fmt.Sprintf("<tr>\n")
+	html += fmt.Sprintf("<th></td>")
+	for _, node := range nodes {
+		html += RenderNodeHeader(node)
+	}
+	html += fmt.Sprintf("</tr>\n")
+	html += fmt.Sprintf("</thead>\n")
+
+	html += fmt.Sprintf("<tbody>\n")
+	for _, logDateTime := range logDateTimes {
+		html += fmt.Sprintf("<tr>")
 		html += fmt.Sprintf("<td class=\"nowrap\"><div>%s</div></td>", logDateTime)
 		for _, nodeLogs := range logTable[logDateTime] {
-
 			html += fmt.Sprintf("<td>")
 			for _, nodeLog := range nodeLogs {
 				html += fmt.Sprintf("<div class=\"prewrap severity_%s\"><strong>[%s]</strong> %s</div>", nodeLog.Severity, nodeLog.Severity, strings.Join(nodeLog.Message[:], "\n"))
@@ -259,10 +247,10 @@ td > div {
 			}
 			html += fmt.Sprintf("</td>")
 		}
-		html += "</tr>"
+		html += fmt.Sprintf("</tr>\n")
 	}
-	html += "</tbody>"
-	html += fmt.Sprintf("</table>")
+	html += fmt.Sprintf("</tbody>\n")
+	html += fmt.Sprintf("</table>\n")
 
 	return html
 }
@@ -273,6 +261,11 @@ func main() {
 
 	args := os.Args
 	inputFiles := args[1:]
+
+	if len(inputFiles) == 0 {
+		log.Printf("Please provide 1 or more RabbitMQ log files")
+		os.Exit(0)
+	}
 
 	nodes := NewNodes(inputFiles)
 
@@ -302,7 +295,7 @@ func main() {
 	}
 
 	for index, _ := range logMessages {
-		checkLogMessageForInfo(&logMessages[index], nodes)
+		checkLogMessageForReport(&logMessages[index], nodes)
 	}
 
 	logDateTimes = RemoveDuplicatesFromSlice(logDateTimes)
