@@ -120,17 +120,27 @@ func checkLogMessageForReport(logMessage *LogMessage, nodes []Node) {
 			parts := strings.Split(message, " ")
 			nodes[logMessage.Node].VersionRabbitMQ = append(nodes[logMessage.Node].VersionRabbitMQ, logMessage.DateTime+" "+parts[3])
 			nodes[logMessage.Node].VersionErlang = append(nodes[logMessage.Node].VersionErlang, logMessage.DateTime+" "+parts[6])
+			logMessage.Reports = append(logMessage.Reports, Report{
+				"RabbitMQ is starting",
+				"info",
+			})
+		}
+		if strings.Contains(message, "Assuming we need to join an existing cluster or initialise from scratch...") {
+			logMessage.Reports = append(logMessage.Reports, Report{
+				"Mnesia directory was empty",
+				"warning",
+			})
 		}
 		if strings.Contains(message, "RabbitMQ is asked to stop...") {
 			logMessage.Reports = append(logMessage.Reports, Report{
-				"Stopped via \"rabbitmqctl stop_app\"",
-				"info",
+				"Stopped via \"rabbitmqctl\" or internally",
+				"warning",
 			})
 		}
 		if strings.Contains(message, "SIGTERM received - shutting down") {
 			logMessage.Reports = append(logMessage.Reports, Report{
-				"Stopped via \"service rabbitmq-server stop\"",
-				"info",
+				"Stopped via \"SIGTERM\"",
+				"warning",
 			})
 		}
 		if strings.Contains(message, "Memory high watermark set to ") {
@@ -163,13 +173,13 @@ func checkLogMessageForReport(logMessage *LogMessage, nodes []Node) {
 		if strings.Contains(message, "Free disk space is insufficient.") {
 			logMessage.Reports = append(logMessage.Reports, Report{
 				message,
-				"info",
+				"error",
 			})
 		}
 		if strings.Contains(message, "disk resource limit alarm set on node ") {
 			logMessage.Reports = append(logMessage.Reports, Report{
 				message,
-				"info",
+				"error",
 			})
 		}
 	}
@@ -178,46 +188,62 @@ func checkLogMessageForReport(logMessage *LogMessage, nodes []Node) {
 func generateReportHTML(logTable map[string][][]*LogMessage, logDateTimes []string, nodes []Node) string {
 	htmlStyle := `
 	<style>
-	*{
-		font-family:monospace;
-		font-size:12px;
+	html, td {
+		font-family: monospace;
+		font-size: 12px;
 	}
-	pre{
-		margin:0px;
+	body {
+		margin: 10px;
 	}
-	td{
-		vertical-align:top;
+	pre {
+		margin: 0px;
+	}
+	h1, h2, h3, h4 {
+		margin: 0px;
+	}
+	td {
+		vertical-align: top;
 	}
 	table {
 		border-top: 1px solid #EEE;
 		border-left: 1px solid #EEE;
 	}
-	td,th {
+	td, th {
 		border-bottom: 1px solid #EEE;
 		border-right: 1px solid #EEE;
 		padding: 0px;
-		vertical-align:top;
+		vertical-align: top;
 	}
 	td > div {
-		padding:3px;
+		padding: 3px;
 	}
-	.nowrap{
-		white-space:nowrap;
+	.nowrap {
+		white-space: nowrap;
 	}
-	.prewrap{
-		white-space:pre-wrap;
+	.header {
+		color: #FFF;
+		background-color: #171717;
 	}
-	.severity_info{
-		background-color:
+	.header td {
+		padding: 5px;
 	}
-	.severity_notice{
-		background-color:#4DA6FF;
+	.prewrap {
+		white-space: pre-wrap;
 	}
-	.severity_warning{
-		background-color:#FFA64D;
+	.severity_info {
+		background-color: #FFFFFF;
 	}
-	.severity_error{
-		background-color:#FF4D4D;
+	.severity_notice {
+		background-color: #4DA6FF;
+	}
+	.severity_warning {
+		background-color: #FFA64D;
+	}
+	.severity_error {
+		background-color: #FF4D4D;
+	}
+	.severity_report {
+		background-color: #4DFF4D;
 	}
 	</style>`
 
@@ -225,6 +251,9 @@ func generateReportHTML(logTable map[string][][]*LogMessage, logDateTimes []stri
 	html += fmt.Sprintf(htmlStyle)
 	html += fmt.Sprintf("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n")
 	html += fmt.Sprintf("<thead>\n")
+	html += fmt.Sprintf("<tr class=\"header\">\n")
+	html += fmt.Sprintf("<td colspan=\"%d\"><h2>Summary</h2></td>", len(nodes)+1)
+	html += fmt.Sprintf("</tr>\n")
 	html += fmt.Sprintf("<tr>\n")
 	html += fmt.Sprintf("<th></td>")
 	for _, node := range nodes {
@@ -234,6 +263,11 @@ func generateReportHTML(logTable map[string][][]*LogMessage, logDateTimes []stri
 	html += fmt.Sprintf("</thead>\n")
 
 	html += fmt.Sprintf("<tbody>\n")
+
+	html += fmt.Sprintf("<tr class=\"header\">\n")
+	html += fmt.Sprintf("<td colspan=\"%d\"><h2>Timeline</h2></td>", len(nodes)+1)
+	html += fmt.Sprintf("<tr>\n")
+
 	for _, logDateTime := range logDateTimes {
 		html += fmt.Sprintf("<tr>")
 		html += fmt.Sprintf("<td class=\"nowrap\"><div>%s</div></td>", logDateTime)
@@ -242,7 +276,7 @@ func generateReportHTML(logTable map[string][][]*LogMessage, logDateTimes []stri
 			for _, nodeLog := range nodeLogs {
 				html += fmt.Sprintf("<div class=\"prewrap severity_%s\"><strong>[%s]</strong> %s</div>", nodeLog.Severity, nodeLog.Severity, strings.Join(nodeLog.Message[:], "\n"))
 				for _, nodeReport := range nodeLog.Reports {
-					html += fmt.Sprintf("<div class=\"prewrap severity_%s\"><strong>REPORT [%s]</strong> %s</div>", nodeReport.Severity, nodeReport.Severity, nodeReport.Message)
+					html += fmt.Sprintf("<div class=\"prewrap severity_report\"><strong>=REPORT=</strong> %s</div>", nodeReport.Message)
 				}
 			}
 			html += fmt.Sprintf("</td>")
