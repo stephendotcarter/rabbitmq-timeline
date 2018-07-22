@@ -30,4 +30,4 @@ Parse and format logs from RabbitMQ
 # Output
 
 - Checkout an example timeline:
-    - [testdata/cluster01/timeline.html](testdata/cluster01/timeline.html)
+    - [testdata/cluster01/timeline.html](http://htmlpreview.github.io/?https://github.com/stephendotcarter/rabbitmq-timeline/blob/master/testdata/cluster01/timeline.html)
