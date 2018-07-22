@@ -26,3 +26,8 @@ Parse and format logs from RabbitMQ
     ```
     rabbitmq-timeline rabbit@node1.log rabbit@node2.log rabbit@node3.log > timeline.html
     ```
+
+# Output
+
+- Checkout an example timeline:
+    - [testdata/cluster01/timeline.html](testdata/cluster01/timeline.html)
