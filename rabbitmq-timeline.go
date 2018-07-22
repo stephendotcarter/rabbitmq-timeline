@@ -67,15 +67,14 @@ func NewLogMessageFromLine(line []string) LogMessage {
 }
 
 func RenderLogMessageRow(message LogMessage) string {
-	row := ""
-	row += "<tr>"
-	row += fmt.Sprintf("<td>%d</td>", message.Node)
-	row += fmt.Sprintf("<td class=\"nowrap\">%s</td>", message.DateTime)
-	row += fmt.Sprintf("<td>%s</td>", message.Severity)
-	row += fmt.Sprintf("<td>%s</td>", message.Pid)
-	row += fmt.Sprintf("<td><pre>%s</pre></td>", strings.Join(message.Message[:], "\n"))
-	row += "</tr>"
-	return row
+	html := fmt.Sprintf("<tr>")
+	html += fmt.Sprintf("<td>%d</td>", message.Node)
+	html += fmt.Sprintf("<td class=\"nowrap\">%s</td>", message.DateTime)
+	html += fmt.Sprintf("<td>%s</td>", message.Severity)
+	html += fmt.Sprintf("<td>%s</td>", message.Pid)
+	html += fmt.Sprintf("<td><pre>%s</pre></td>", strings.Join(message.Message[:], "\n"))
+	html += fmt.Sprintf("</tr>")
+	return html
 }
 
 func RenderNodeHeader(node Node) string {
@@ -250,23 +249,23 @@ func generateReportHTML(logTable map[string][][]*LogMessage, logDateTimes []stri
 	html := ""
 	html += fmt.Sprintf(htmlStyle)
 	html += fmt.Sprintf("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n")
-	html += fmt.Sprintf("<thead>\n")
-	html += fmt.Sprintf("<tr class=\"header\">\n")
+	html += fmt.Sprintf("<thead>")
+	html += fmt.Sprintf("<tr class=\"header\">")
 	html += fmt.Sprintf("<td colspan=\"%d\"><h2>Summary</h2></td>", len(nodes)+1)
-	html += fmt.Sprintf("</tr>\n")
-	html += fmt.Sprintf("<tr>\n")
+	html += fmt.Sprintf("</tr>")
+	html += fmt.Sprintf("<tr>")
 	html += fmt.Sprintf("<th></td>")
 	for _, node := range nodes {
 		html += RenderNodeHeader(node)
 	}
-	html += fmt.Sprintf("</tr>\n")
-	html += fmt.Sprintf("</thead>\n")
+	html += fmt.Sprintf("</tr>")
+	html += fmt.Sprintf("</thead>")
 
-	html += fmt.Sprintf("<tbody>\n")
+	html += fmt.Sprintf("<tbody>")
 
-	html += fmt.Sprintf("<tr class=\"header\">\n")
+	html += fmt.Sprintf("<tr class=\"header\">")
 	html += fmt.Sprintf("<td colspan=\"%d\"><h2>Timeline</h2></td>", len(nodes)+1)
-	html += fmt.Sprintf("<tr>\n")
+	html += fmt.Sprintf("<tr>")
 
 	for _, logDateTime := range logDateTimes {
 		html += fmt.Sprintf("<tr>")
@@ -281,16 +280,16 @@ func generateReportHTML(logTable map[string][][]*LogMessage, logDateTimes []stri
 			}
 			html += fmt.Sprintf("</td>")
 		}
-		html += fmt.Sprintf("</tr>\n")
+		html += fmt.Sprintf("</tr>")
 	}
-	html += fmt.Sprintf("</tbody>\n")
-	html += fmt.Sprintf("</table>\n")
+	html += fmt.Sprintf("</tbody>")
+	html += fmt.Sprintf("</table>")
 
 	return html
 }
 
 func PrintUsage() {
-	fmt.Printf("Usage: rabbitmq-timeline FILE1 FILE2 FILE3... > OUTPUT.html\n")
+	fmt.Printf("Usage: rabbitmq-timeline FILE1 FILE2 FILE3... > OUTPUT_FILE\n")
 }
 
 func main() {
