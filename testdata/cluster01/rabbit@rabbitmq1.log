@@ -1,0 +1,119 @@
+2018-07-21 21:32:09.893 [info] <0.7.0> Log file opened with Lager
+2018-07-21 21:32:10.111 [info] <0.206.0> 
+ Starting RabbitMQ 3.7.7 on Erlang 21.0
+ Copyright (C) 2007-2018 Pivotal Software, Inc.
+ Licensed under the MPL.  See http://www.rabbitmq.com/
+2018-07-21 21:32:10.117 [info] <0.206.0> 
+ node           : rabbit@rabbitmq1
+ home dir       : /var/lib/rabbitmq
+ config file(s) : (none)
+ cookie hash    : OFIcCEmciVvO496nkznGsA==
+ log(s)         : /var/log/rabbitmq/rabbit@rabbitmq1.log
+                : /var/log/rabbitmq/rabbit@rabbitmq1_upgrade.log
+ database dir   : /var/lib/rabbitmq/mnesia/rabbit@rabbitmq1
+2018-07-21 21:32:11.031 [info] <0.214.0> Memory high watermark set to 396 MiB (416088064 bytes) of 992 MiB (1040220160 bytes) total
+2018-07-21 21:32:11.035 [info] <0.216.0> Enabling free disk space monitoring
+2018-07-21 21:32:11.035 [info] <0.216.0> Disk free limit set to 50MB
+2018-07-21 21:32:11.037 [info] <0.218.0> Limiting to approx 924 file handles (829 sockets)
+2018-07-21 21:32:11.038 [info] <0.219.0> FHC read buffering:  OFF
+2018-07-21 21:32:11.038 [info] <0.219.0> FHC write buffering: ON
+2018-07-21 21:32:11.038 [info] <0.206.0> Node database directory at /var/lib/rabbitmq/mnesia/rabbit@rabbitmq1 is empty. Assuming we need to join an existing cluster or initialise from scratch...
+2018-07-21 21:32:11.038 [info] <0.206.0> Configured peer discovery backend: rabbit_peer_discovery_classic_config
+2018-07-21 21:32:11.038 [info] <0.206.0> Will try to lock with peer discovery backend rabbit_peer_discovery_classic_config
+2018-07-21 21:32:11.038 [info] <0.206.0> Peer discovery backend does not support locking, falling back to randomized delay
+2018-07-21 21:32:11.038 [info] <0.206.0> Peer discovery backend rabbit_peer_discovery_classic_config does not support registration, skipping randomized startup delay.
+2018-07-21 21:32:11.038 [info] <0.206.0> All discovered existing cluster peers: 
+2018-07-21 21:32:11.038 [info] <0.206.0> Discovered no peer nodes to cluster with
+2018-07-21 21:32:11.040 [info] <0.42.0> Application mnesia exited with reason: stopped
+2018-07-21 21:32:11.077 [info] <0.206.0> Waiting for Mnesia tables for 30000 ms, 9 retries left
+2018-07-21 21:32:11.089 [info] <0.206.0> Waiting for Mnesia tables for 30000 ms, 9 retries left
+2018-07-21 21:32:11.101 [info] <0.206.0> Waiting for Mnesia tables for 30000 ms, 9 retries left
+2018-07-21 21:32:11.101 [info] <0.206.0> Peer discovery backend rabbit_peer_discovery_classic_config does not support registration, skipping registration.
+2018-07-21 21:32:11.102 [info] <0.206.0> Priority queues enabled, real BQ is rabbit_variable_queue
+2018-07-21 21:32:11.104 [info] <0.385.0> Starting rabbit_node_monitor
+2018-07-21 21:32:11.115 [info] <0.206.0> message_store upgrades: 1 to apply
+2018-07-21 21:32:11.115 [info] <0.206.0> message_store upgrades: Applying rabbit_variable_queue:move_messages_to_vhost_store
+2018-07-21 21:32:11.115 [info] <0.206.0> message_store upgrades: No durable queues found. Skipping message store migration
+2018-07-21 21:32:11.115 [info] <0.206.0> message_store upgrades: Removing the old message store data
+2018-07-21 21:32:11.115 [info] <0.206.0> message_store upgrades: All upgrades applied successfully
+2018-07-21 21:32:11.128 [info] <0.206.0> Adding vhost '/'
+2018-07-21 21:32:11.134 [info] <0.421.0> Making sure data directory '/var/lib/rabbitmq/mnesia/rabbit@rabbitmq1/msg_stores/vhosts/628WB79CIFDYO9LJI6DKMI09L' for vhost '/' exists
+2018-07-21 21:32:11.135 [info] <0.421.0> Starting message stores for vhost '/'
+2018-07-21 21:32:11.136 [info] <0.425.0> Message store "628WB79CIFDYO9LJI6DKMI09L/msg_store_transient": using rabbit_msg_store_ets_index to provide index
+2018-07-21 21:32:11.136 [info] <0.421.0> Started message store of type transient for vhost '/'
+2018-07-21 21:32:11.137 [info] <0.428.0> Message store "628WB79CIFDYO9LJI6DKMI09L/msg_store_persistent": using rabbit_msg_store_ets_index to provide index
+2018-07-21 21:32:11.137 [warning] <0.428.0> Message store "628WB79CIFDYO9LJI6DKMI09L/msg_store_persistent": rebuilding indices from scratch
+2018-07-21 21:32:11.137 [info] <0.421.0> Started message store of type persistent for vhost '/'
+2018-07-21 21:32:11.138 [info] <0.206.0> Creating user 'guest'
+2018-07-21 21:32:11.139 [info] <0.206.0> Setting user tags for user 'guest' to [administrator]
+2018-07-21 21:32:11.140 [info] <0.206.0> Setting permissions for 'guest' in '/' to '.*', '.*', '.*'
+2018-07-21 21:32:11.142 [info] <0.466.0> started TCP Listener on [::]:5672
+2018-07-21 21:32:11.143 [info] <0.206.0> Setting up a table for connection tracking on this node: tracked_connection_on_node_rabbit@rabbitmq1
+2018-07-21 21:32:11.145 [info] <0.206.0> Setting up a table for per-vhost connection counting on this node: tracked_connection_per_vhost_on_node_rabbit@rabbitmq1
+2018-07-21 21:32:11.174 [notice] <0.108.0> Changed loghwm of /var/log/rabbitmq/rabbit@rabbitmq1.log to 50
+2018-07-21 21:32:11.304 [info] <0.7.0> Server startup complete; 0 plugins started.
+2018-07-21 21:32:12.633 [error] <0.477.0> ** Connection attempt from disallowed node rabbitmqcli17@rabbitmq1 ** 
+2018-07-21 21:32:12.645 [error] <0.479.0> ** Connection attempt from disallowed node rabbitmqcli17@rabbitmq1 ** 
+2018-07-21 21:32:12.656 [info] <0.63.0> SIGTERM received - shutting down
+2018-07-21 21:32:12.657 [info] <0.206.0> Peer discovery backend rabbit_peer_discovery_classic_config does not support registration, skipping unregistration.
+2018-07-21 21:32:12.657 [info] <0.466.0> stopped TCP Listener on [::]:5672
+2018-07-21 21:32:12.658 [info] <0.379.0> Closing all connections in vhost '/' on node 'rabbit@rabbitmq1' because the vhost is stopping
+2018-07-21 21:32:12.658 [info] <0.428.0> Stopping message store for directory '/var/lib/rabbitmq/mnesia/rabbit@rabbitmq1/msg_stores/vhosts/628WB79CIFDYO9LJI6DKMI09L/msg_store_persistent'
+2018-07-21 21:32:12.660 [info] <0.428.0> Message store for directory '/var/lib/rabbitmq/mnesia/rabbit@rabbitmq1/msg_stores/vhosts/628WB79CIFDYO9LJI6DKMI09L/msg_store_persistent' is stopped
+2018-07-21 21:32:12.660 [info] <0.425.0> Stopping message store for directory '/var/lib/rabbitmq/mnesia/rabbit@rabbitmq1/msg_stores/vhosts/628WB79CIFDYO9LJI6DKMI09L/msg_store_transient'
+2018-07-21 21:32:12.661 [info] <0.425.0> Message store for directory '/var/lib/rabbitmq/mnesia/rabbit@rabbitmq1/msg_stores/vhosts/628WB79CIFDYO9LJI6DKMI09L/msg_store_transient' is stopped
+2018-07-21 21:32:17.459 [info] <0.7.0> Log file opened with Lager
+2018-07-21 21:32:18.522 [info] <0.244.0> 
+ Starting RabbitMQ 3.7.7 on Erlang 21.0
+ Copyright (C) 2007-2018 Pivotal Software, Inc.
+ Licensed under the MPL.  See http://www.rabbitmq.com/
+2018-07-21 21:32:18.524 [info] <0.244.0> 
+ node           : rabbit@rabbitmq1
+ home dir       : /var/lib/rabbitmq
+ config file(s) : /etc/rabbitmq/rabbitmq.conf
+ cookie hash    : 9nGlDWAkeRKdMSnJ0vyQgA==
+ log(s)         : /var/log/rabbitmq/rabbit@rabbitmq1.log
+                : /var/log/rabbitmq/rabbit@rabbitmq1_upgrade.log
+ database dir   : /var/lib/rabbitmq/mnesia/rabbit@rabbitmq1
+2018-07-21 21:32:18.548 [info] <0.298.0> Memory high watermark set to 396 MiB (416088064 bytes) of 992 MiB (1040220160 bytes) total
+2018-07-21 21:32:18.551 [info] <0.300.0> Enabling free disk space monitoring
+2018-07-21 21:32:18.551 [info] <0.300.0> Disk free limit set to 50MB
+2018-07-21 21:32:18.553 [info] <0.302.0> Limiting to approx 924 file handles (829 sockets)
+2018-07-21 21:32:18.553 [info] <0.303.0> FHC read buffering:  OFF
+2018-07-21 21:32:18.553 [info] <0.303.0> FHC write buffering: ON
+2018-07-21 21:32:18.554 [info] <0.244.0> Waiting for Mnesia tables for 30000 ms, 9 retries left
+2018-07-21 21:32:18.567 [info] <0.244.0> Waiting for Mnesia tables for 30000 ms, 9 retries left
+2018-07-21 21:32:18.568 [info] <0.244.0> Peer discovery backend rabbit_peer_discovery_classic_config does not support registration, skipping registration.
+2018-07-21 21:32:18.568 [info] <0.244.0> Priority queues enabled, real BQ is rabbit_variable_queue
+2018-07-21 21:32:18.570 [info] <0.323.0> Starting rabbit_node_monitor
+2018-07-21 21:32:18.593 [info] <0.351.0> Making sure data directory '/var/lib/rabbitmq/mnesia/rabbit@rabbitmq1/msg_stores/vhosts/628WB79CIFDYO9LJI6DKMI09L' for vhost '/' exists
+2018-07-21 21:32:18.595 [info] <0.351.0> Starting message stores for vhost '/'
+2018-07-21 21:32:18.595 [info] <0.355.0> Message store "628WB79CIFDYO9LJI6DKMI09L/msg_store_transient": using rabbit_msg_store_ets_index to provide index
+2018-07-21 21:32:18.596 [info] <0.351.0> Started message store of type transient for vhost '/'
+2018-07-21 21:32:18.596 [info] <0.358.0> Message store "628WB79CIFDYO9LJI6DKMI09L/msg_store_persistent": using rabbit_msg_store_ets_index to provide index
+2018-07-21 21:32:18.596 [info] <0.351.0> Started message store of type persistent for vhost '/'
+2018-07-21 21:32:18.599 [info] <0.393.0> started TCP Listener on [::]:5672
+2018-07-21 21:32:18.600 [info] <0.244.0> Setting up a table for connection tracking on this node: tracked_connection_on_node_rabbit@rabbitmq1
+2018-07-21 21:32:18.600 [info] <0.244.0> Setting up a table for per-vhost connection counting on this node: tracked_connection_per_vhost_on_node_rabbit@rabbitmq1
+2018-07-21 21:32:18.626 [notice] <0.109.0> Changed loghwm of /var/log/rabbitmq/rabbit@rabbitmq1.log to 50
+2018-07-21 21:32:18.709 [info] <0.7.0> Server startup complete; 0 plugins started.
+2018-07-21 21:32:20.268 [info] <0.401.0> Management plugin: using rates mode 'basic'
+2018-07-21 21:32:20.292 [info] <0.464.0> Management plugin started. Port: 15672
+2018-07-21 21:32:20.292 [info] <0.570.0> Statistics database started.
+2018-07-21 21:32:20.292 [info] <0.401.0> Plugins changed; enabled [rabbitmq_management_agent,cowlib,cowboy,rabbitmq_web_dispatch,amqp_client,rabbitmq_management]
+2018-07-21 21:32:20.708 [info] <0.582.0> Creating user 'vcap'
+2018-07-21 21:32:21.204 [info] <0.589.0> Setting permissions for 'vcap' in '/' to '.*', '.*', '.*'
+2018-07-21 21:32:21.669 [info] <0.597.0> Setting user tags for user 'vcap' to [administrator]
+2018-07-21 21:34:50.471 [info] <0.323.0> node rabbit@rabbitmq2 up
+2018-07-21 21:34:51.404 [info] <0.323.0> rabbit on node rabbit@rabbitmq2 up
+2018-07-21 21:37:44.311 [info] <0.323.0> node rabbit@rabbitmq3 up
+2018-07-21 21:37:45.466 [info] <0.323.0> rabbit on node rabbit@rabbitmq3 up
+2018-07-21 21:43:46.742 [info] <0.323.0> rabbit on node rabbit@rabbitmq2 down
+2018-07-21 21:43:46.743 [warning] <0.573.0> Management delegate query returned errors:
+[{<37675.1213.0>,{exit,{nodedown,rabbit@rabbitmq2},[]}}]
+2018-07-21 21:43:46.742 [error] <0.604.0> ** Node rabbit@rabbitmq2 not responding **
+** Removing (timedout) connection **
+2018-07-21 21:43:46.757 [info] <0.323.0> Node rabbit@rabbitmq2 is down, deleting its listeners
+2018-07-21 21:43:46.758 [info] <0.323.0> node rabbit@rabbitmq2 down: net_tick_timeout
+2018-07-21 21:43:59.310 [info] <0.323.0> node rabbit@rabbitmq2 up
+2018-07-21 21:47:29.001 [info] <0.323.0> node rabbit@rabbitmq2 down: connection_closed
