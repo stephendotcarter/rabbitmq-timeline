@@ -289,6 +289,10 @@ func generateReportHTML(logTable map[string][][]*LogMessage, logDateTimes []stri
 	return html
 }
 
+func PrintUsage() {
+	fmt.Printf("Usage: rabbitmq-timeline FILE1 FILE2 FILE3... > OUTPUT.html\n")
+}
+
 func main() {
 
 	logPattern, _ := regexp.Compile(`(?P<date>[0-9-]{10}) (?P<time>[0-9.:]{12}) \[(?P<severity>[a-z]+)\] <(?P<pid>[0-9.]+)> (?P<message>.*)`)
@@ -297,7 +301,7 @@ func main() {
 	inputFiles := args[1:]
 
 	if len(inputFiles) == 0 {
-		log.Printf("Please provide 1 or more RabbitMQ log files")
+		PrintUsage()
 		os.Exit(0)
 	}
 
