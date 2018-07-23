@@ -186,6 +186,12 @@ func checkLogMessageForReport(logMessage *LogMessage, nodes []Node) {
 				"error",
 			})
 		}
+		if strings.Contains(message, " down: net_tick_timeout") {
+			logMessage.Reports = append(logMessage.Reports, Report{
+				message,
+				"error",
+			})
+		}
 	}
 }
 
