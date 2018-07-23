@@ -10,6 +10,11 @@ import (
 	"strings"
 )
 
+var (
+	BuildVersion string
+	BuildDate    string
+)
+
 type Node struct {
 	FileName        string
 	Name            string
@@ -288,8 +293,12 @@ func generateReportHTML(logTable map[string][][]*LogMessage, logDateTimes []stri
 	return html
 }
 
+func PrintVersion() {
+	fmt.Printf("rabbitmq-timeline version %s (%s)\n", BuildVersion, BuildDate)
+}
+
 func PrintUsage() {
-	fmt.Printf("Usage: rabbitmq-timeline FILE1 FILE2 FILE3... > OUTPUT_FILE\n")
+	fmt.Printf("Usage: rabbitmq-timeline FILE1 FILE2 FILE3... > FILE\n\n")
 }
 
 func main() {
@@ -300,6 +309,7 @@ func main() {
 	inputFiles := args[1:]
 
 	if len(inputFiles) == 0 {
+		PrintVersion()
 		PrintUsage()
 		os.Exit(0)
 	}
