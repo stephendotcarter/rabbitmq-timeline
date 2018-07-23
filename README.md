@@ -27,7 +27,7 @@ Parse and format logs from RabbitMQ
 
 - Run the command followed by 1 or more RabbitMQ logs and redirect the output to a HTML file:
     ```
-    rabbitmq-timeline LOG_FILE... > timeline.html
+    rabbitmq-timeline FILE1 FILE2 FILE3... > FILE
     ```
 - Example:
     ```
