@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"regexp"
 	"sort"
 	"strings"
@@ -84,11 +85,11 @@ func RenderLogMessageRow(message LogMessage) string {
 
 func RenderNodeHeader(node Node) string {
 	html := fmt.Sprintf("<td><div>")
-	html += fmt.Sprintf("<strong>Filename:</strong><br>%s<br>", node.FileName)
-	html += fmt.Sprintf("<strong>Name:</strong><br>%s<br>", node.Name)
-	html += fmt.Sprintf("<strong>RabbitMQ:</strong><br>%s<br>", strings.Join(node.VersionRabbitMQ, "<br>"))
-	html += fmt.Sprintf("<strong>Erlang:</strong><br>%s<br>", strings.Join(node.VersionErlang, "<br>"))
-	html += fmt.Sprintf("<strong>Cookie Hash:</strong><br>%s<br>", strings.Join(node.CookieHash, "<br>"))
+	html += fmt.Sprintf("<strong>Filename:</strong><div class=\"indent\">%s</div>", node.FileName)
+	html += fmt.Sprintf("<strong>Name:</strong><div class=\"indent\">%s</div>", node.Name)
+	html += fmt.Sprintf("<strong>RabbitMQ:</strong><div class=\"indent\">%s</div>", strings.Join(node.VersionRabbitMQ, "<br>"))
+	html += fmt.Sprintf("<strong>Erlang:</strong><div class=\"indent\">%s</div>", strings.Join(node.VersionErlang, "<br>"))
+	html += fmt.Sprintf("<strong>Cookie Hash:</strong><div class=\"indent\">%s</div>", strings.Join(node.CookieHash, "<br>"))
 	html += fmt.Sprintf("</div></td>")
 	return html
 }
@@ -227,6 +228,9 @@ func generateReportHTML(logTable map[string][][]*LogMessage, logDateTimes []stri
 	td > div {
 		padding: 3px;
 	}
+	.indent {
+		margin-left:15px;
+	}
 	.nowrap {
 		white-space: nowrap;
 	}
@@ -236,6 +240,7 @@ func generateReportHTML(logTable map[string][][]*LogMessage, logDateTimes []stri
 	}
 	.header td {
 		padding: 5px;
+		font-family: Arial;
 	}
 	.prewrap {
 		white-space: pre-wrap;
@@ -262,7 +267,10 @@ func generateReportHTML(logTable map[string][][]*LogMessage, logDateTimes []stri
 	html += fmt.Sprintf("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n")
 	html += fmt.Sprintf("<thead>")
 	html += fmt.Sprintf("<tr class=\"header\">")
-	html += fmt.Sprintf("<td colspan=\"%d\"><h2>Summary</h2></td>", len(nodes)+1)
+	html += fmt.Sprintf("<td><h3>Summary</h3></td>")
+	for _, node := range nodes {
+		html += fmt.Sprintf("<td><h3>%s</h3></td>", filepath.Base(node.FileName))
+	}
 	html += fmt.Sprintf("</tr>")
 	html += fmt.Sprintf("<tr>")
 	html += fmt.Sprintf("<th></td>")
@@ -273,10 +281,12 @@ func generateReportHTML(logTable map[string][][]*LogMessage, logDateTimes []stri
 	html += fmt.Sprintf("</thead>")
 
 	html += fmt.Sprintf("<tbody>")
-
 	html += fmt.Sprintf("<tr class=\"header\">")
-	html += fmt.Sprintf("<td colspan=\"%d\"><h2>Timeline</h2></td>", len(nodes)+1)
-	html += fmt.Sprintf("<tr>")
+	html += fmt.Sprintf("<td><h3>Timeline</h></td>")
+	for _, node := range nodes {
+		html += fmt.Sprintf("<td><h3>%s</h3></td>", filepath.Base(node.FileName))
+	}
+	html += fmt.Sprintf("</tr>")
 
 	for _, logDateTime := range logDateTimes {
 		html += fmt.Sprintf("<tr>")
