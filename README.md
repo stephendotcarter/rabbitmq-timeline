@@ -7,13 +7,20 @@ Parse and format logs from RabbitMQ
 
 # Install
 
-- Install and configure Go:
-    - https://golang.org/doc/install
+- Download required binary for your platform:
+    - [https://github.com/stephendotcarter/rabbitmq-timeline/releases/](https://github.com/stephendotcarter/rabbitmq-timeline/releases/)
 
-- Install `rabbitmq-timeline`:
+- Make it executable:
     ```
-    go get github.com/stephendotcarter/rabbitmq-timeline
-    go install github.com/stephendotcarter/rabbitmq-timeline
+    chmod +x ~/Downloads/rabbitmq-timeline_*
+    ```
+- Move to a directory in your `PATH`:
+    ```
+    sudo mv ~/Downloads/rabbitmq-timeline_* /usr/local/bin/rabbitmq-timeline
+    ```
+- Execute!
+    ```
+    rabbitmq-timeline
     ```
 
 # Usage
