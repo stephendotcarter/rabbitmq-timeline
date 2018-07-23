@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"log"
 	"os"
@@ -73,25 +74,27 @@ func NewLogMessageFromLine(line []string) LogMessage {
 }
 
 func RenderLogMessageRow(message LogMessage) string {
-	html := fmt.Sprintf("<tr>")
-	html += fmt.Sprintf("<td>%d</td>", message.Node)
-	html += fmt.Sprintf("<td class=\"nowrap\">%s</td>", message.DateTime)
-	html += fmt.Sprintf("<td>%s</td>", message.Severity)
-	html += fmt.Sprintf("<td>%s</td>", message.Pid)
-	html += fmt.Sprintf("<td><pre>%s</pre></td>", strings.Join(message.Message[:], "\n"))
-	html += fmt.Sprintf("</tr>")
-	return html
+	var html bytes.Buffer
+	html.WriteString(fmt.Sprintf("<tr>"))
+	html.WriteString(fmt.Sprintf("<td>%d</td>", message.Node))
+	html.WriteString(fmt.Sprintf("<td class=\"nowrap\">%s</td>", message.DateTime))
+	html.WriteString(fmt.Sprintf("<td>%s</td>", message.Severity))
+	html.WriteString(fmt.Sprintf("<td>%s</td>", message.Pid))
+	html.WriteString(fmt.Sprintf("<td><pre>%s</pre></td>", strings.Join(message.Message[:], "\n")))
+	html.WriteString(fmt.Sprintf("</tr>"))
+	return html.String()
 }
 
 func RenderNodeHeader(node Node) string {
-	html := fmt.Sprintf("<td><div>")
-	html += fmt.Sprintf("<strong>Filename:</strong><div class=\"indent\">%s</div>", node.FileName)
-	html += fmt.Sprintf("<strong>Name:</strong><div class=\"indent\">%s</div>", node.Name)
-	html += fmt.Sprintf("<strong>RabbitMQ:</strong><div class=\"indent\">%s</div>", strings.Join(node.VersionRabbitMQ, "<br>"))
-	html += fmt.Sprintf("<strong>Erlang:</strong><div class=\"indent\">%s</div>", strings.Join(node.VersionErlang, "<br>"))
-	html += fmt.Sprintf("<strong>Cookie Hash:</strong><div class=\"indent\">%s</div>", strings.Join(node.CookieHash, "<br>"))
-	html += fmt.Sprintf("</div></td>")
-	return html
+	var html bytes.Buffer
+	html.WriteString(fmt.Sprintf("<td><div>"))
+	html.WriteString(fmt.Sprintf("<strong>Filename:</strong><div class=\"indent\">%s</div>", node.FileName))
+	html.WriteString(fmt.Sprintf("<strong>Name:</strong><div class=\"indent\">%s</div>", node.Name))
+	html.WriteString(fmt.Sprintf("<strong>RabbitMQ:</strong><div class=\"indent\">%s</div>", strings.Join(node.VersionRabbitMQ, "<br>")))
+	html.WriteString(fmt.Sprintf("<strong>Erlang:</strong><div class=\"indent\">%s</div>", strings.Join(node.VersionErlang, "<br>")))
+	html.WriteString(fmt.Sprintf("<strong>Cookie Hash:</strong><div class=\"indent\">%s</div>", strings.Join(node.CookieHash, "<br>")))
+	html.WriteString(fmt.Sprintf("</div></td>"))
+	return html.String()
 }
 
 func RemoveDuplicatesFromSlice(s []string) []string {
@@ -197,6 +200,8 @@ func checkLogMessageForReport(logMessage *LogMessage, nodes []Node) {
 }
 
 func generateReportHTML(logTable map[string][][]*LogMessage, logDateTimes []string, nodes []Node) string {
+	var html bytes.Buffer
+
 	htmlStyle := `
 	<style>
 	html, td {
@@ -245,68 +250,68 @@ func generateReportHTML(logTable map[string][][]*LogMessage, logDateTimes []stri
 	.prewrap {
 		white-space: pre-wrap;
 	}
-	.severity_info {
+	.s_info {
 		background-color: #FFFFFF;
 	}
-	.severity_notice {
+	.s_notice {
 		background-color: #4DA6FF;
 	}
-	.severity_warning {
+	.s_warning {
 		background-color: #FFA64D;
 	}
-	.severity_error {
+	.s_error {
 		background-color: #FF4D4D;
 	}
-	.severity_report {
+	.s_report {
 		background-color: #4DFF4D;
 	}
 	</style>`
 
-	html := ""
-	html += fmt.Sprintf(htmlStyle)
-	html += fmt.Sprintf("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n")
-	html += fmt.Sprintf("<thead>")
-	html += fmt.Sprintf("<tr class=\"header\">")
-	html += fmt.Sprintf("<td><h3>Summary</h3></td>")
+	html.WriteString(fmt.Sprintf(htmlStyle))
+	html.WriteString(fmt.Sprintf("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n"))
+	html.WriteString(fmt.Sprintf("<thead>\n"))
+	html.WriteString(fmt.Sprintf("<tr class=\"header\">"))
+	html.WriteString(fmt.Sprintf("<td><h3>Summary</h3></td>\n"))
 	for _, node := range nodes {
-		html += fmt.Sprintf("<td><h3>%s</h3></td>", filepath.Base(node.FileName))
+		html.WriteString(fmt.Sprintf("<td><h3>%s</h3></td>\n", filepath.Base(node.FileName)))
 	}
-	html += fmt.Sprintf("</tr>")
-	html += fmt.Sprintf("<tr>")
-	html += fmt.Sprintf("<th></td>")
+	html.WriteString(fmt.Sprintf("</tr>"))
+	html.WriteString(fmt.Sprintf("<tr>"))
+	html.WriteString(fmt.Sprintf("<th></td>"))
 	for _, node := range nodes {
-		html += RenderNodeHeader(node)
+		html.WriteString(RenderNodeHeader(node))
 	}
-	html += fmt.Sprintf("</tr>")
-	html += fmt.Sprintf("</thead>")
+	html.WriteString(fmt.Sprintf("</tr>"))
+	html.WriteString(fmt.Sprintf("</thead>\n"))
 
-	html += fmt.Sprintf("<tbody>")
-	html += fmt.Sprintf("<tr class=\"header\">")
-	html += fmt.Sprintf("<td><h3>Timeline</h></td>")
+	html.WriteString(fmt.Sprintf("<tbody>\n"))
+	html.WriteString(fmt.Sprintf("<tr class=\"header\">"))
+	html.WriteString(fmt.Sprintf("<td><h3>Timeline</h></td>\n"))
 	for _, node := range nodes {
-		html += fmt.Sprintf("<td><h3>%s</h3></td>", filepath.Base(node.FileName))
+		html.WriteString(fmt.Sprintf("<td><h3>%s</h3></td>\n", filepath.Base(node.FileName)))
 	}
-	html += fmt.Sprintf("</tr>")
+	html.WriteString(fmt.Sprintf("</tr>\n"))
 
 	for _, logDateTime := range logDateTimes {
-		html += fmt.Sprintf("<tr>")
-		html += fmt.Sprintf("<td class=\"nowrap\"><div>%s</div></td>", logDateTime)
+		html.WriteString(fmt.Sprintf("<tr>\n"))
+		html.WriteString(fmt.Sprintf("<td class=\"nowrap\"><div>%s</div></td>\n", logDateTime))
+
 		for _, nodeLogs := range logTable[logDateTime] {
-			html += fmt.Sprintf("<td>")
+			html.WriteString(fmt.Sprintf("<td>\n"))
 			for _, nodeLog := range nodeLogs {
-				html += fmt.Sprintf("<div class=\"prewrap severity_%s\"><strong>[%s]</strong> %s</div>", nodeLog.Severity, nodeLog.Severity, strings.Join(nodeLog.Message[:], "\n"))
+				html.WriteString(fmt.Sprintf("<div class=\"prewrap s_%s\"><strong>[%s]</strong> %s</div>", nodeLog.Severity, nodeLog.Severity, strings.Join(nodeLog.Message[:], "\n")))
 				for _, nodeReport := range nodeLog.Reports {
-					html += fmt.Sprintf("<div class=\"prewrap severity_report\"><strong>=REPORT=</strong> %s</div>", nodeReport.Message)
+					html.WriteString(fmt.Sprintf("<div class=\"prewrap s_report\"><strong>=REPORT=</strong> %s</div>", nodeReport.Message))
 				}
 			}
-			html += fmt.Sprintf("</td>")
+			html.WriteString(fmt.Sprintf("</td>\n"))
 		}
-		html += fmt.Sprintf("</tr>")
+		html.WriteString(fmt.Sprintf("</tr>\n"))
 	}
-	html += fmt.Sprintf("</tbody>")
-	html += fmt.Sprintf("</table>")
+	html.WriteString(fmt.Sprintf("</tbody>\n"))
+	html.WriteString(fmt.Sprintf("</table>\n"))
 
-	return html
+	return html.String()
 }
 
 func PrintVersion() {
@@ -334,6 +339,7 @@ func main() {
 
 	var logMessages []LogMessage
 	var logDateTimes []string
+
 	for nodeIndex, node := range nodes {
 		f, _ := os.Open(node.FileName)
 		fs := bufio.NewScanner(f)
